@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <h1 class="mt-4 mb-3">{{ post.title }}</h1>
+
+        <!--информация об авторе и дате, изображение-->
+        <p class="text-muted mb-4">
+            Опубликовано {{ post.author }} | {{ post.date.strftime('%d.%m.%Y в %H:%M') }}
+        </p>
+        <img class="img-fluid rounded mb-4" src="{{ url_for('static', filename='images/' + post.image_id) }}" alt="{{ post.title }}"
+             style="max-height: 500px; width: 100%; object-fit: cover;">
+
+        <!--текст поста-->
+        <div class="post-content mb-5">
+            {% for paragraph in post.text.split('\n') %}
+                <p>{{ paragraph }}</p>
+            {% endfor %}
+        </div>
+
+        <!--форма для комментария-->
+        <div class="comment-form mb-5">
+            <h3 class="mb-4">Оставьте комментарий</h3>
+            <form method="POST" action="#">
+                <div class="mb-3">
+                    <label for="commentText" class="form-label">Комментарий</label>
+                    <textarea class="form-control" id="commentText" name="text" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Отправить</button>
+            </form>
+        </div>
+
+        <!--комментарии-->
+        <div class="comments-section">
+            <h3 class="mb-4">Комментарии ({{ post.comments|length }})</h3>
+            {% macro render_comments(comments_list) %}
+                {% for comment in comments_list %}
+                    <div class="comment mb-4">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center text-white" style="width: 50px; height: 50px;">
+                                    {{ comment.author[0]|upper }}
+                                </div>
+                            </div>
+
+                            <!-- Ответы на комментарии -->
+                            <div class="flex-grow-1 ms-3">
+                                <div class="comment-header mb-2">
+                                    <strong class="me-2">{{ comment.author }}</strong>
+                                    <small class="text-muted">{{ comment.date.strftime('%d.%m.%Y %H:%M') if comment.date else 'только что' }}</small>
+                                </div>
+                                <p class="mb-2">{{ comment.text }}</p>
+                                <button class="btn btn-sm btn-outline-secondary reply-btn" data-author="{{ comment.author }}">
+                                    Ответить
+                                </button>
+
+                                {% if comment.replies %}
+                                    <div class="replies mt-3 ps-4 border-start">
+                                        {{ render_comments(comment.replies) }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endmacro %}
+
+            {# Вызываем макрос для отображения всех комментариев #}
+            {{ render_comments(post.comments) }}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
