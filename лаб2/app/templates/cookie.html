@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="my-4">Работа с Cookie</h1>
+
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h3 class="h5 mb-0">Демонстрация управления Cookie</h3>
+            </div>
+            <div class="card-body text-center py-5">
+                {% if cookie_exists %}
+                    <div class="alert alert-success">
+                        <h4 class="alert-heading">🍪 Cookie установлен!</h4>
+                        <p>Cookie <code>{{ cookie_value }}</code> в данный момент существует.</p>
+                        <hr>
+                        <form method="POST" action="{{ url_for('cookie') }}">
+                            <input type="hidden" name="action" value="delete">
+                            <button type="submit" class="btn btn-danger btn-lg">
+                                🗑️ Удалить cookie
+                            </button>
+                        </form>
+                    </div>
+                {% else %}
+                    <div class="alert alert-secondary">
+                        <h4 class="alert-heading">🍪 Cookie не установлен</h4>
+                        <p>Cookie <code>demo_cookie</code> в данный момент отсутствует.</p>
+                        <hr>
+                        <form method="POST" action="{{ url_for('cookie') }}">
+                            <input type="hidden" name="action" value="set">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                📝 Установить cookie
+                            </button>
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header bg-secondary text-white">
+                <h3 class="h5 mb-0">Все текущие cookie</h3>
+            </div>
+            <div class="card-body">
+                {% if request.cookies %}
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Имя cookie</th>
+                                    <th>Значение</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for key, value in request.cookies.items() %}
+                                    <tr>
+                                        <td><code>{{ key }}</code></td>
+                                        <td><code>{{ value }}</code></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted mb-0 text-center py-3">Нет установленных cookie.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

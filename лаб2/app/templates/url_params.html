@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="my-4">Параметры URL (Query String)</h1>
+
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="h5 mb-0">Параметры из адресной строки</h3>
+            </div>
+            <div class="card-body">
+                {% if url_params %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Параметр</th>
+                                    <th>Значение</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for key, value in url_params.items() %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td><code>{{ key }}</code></td>
+                                        <td><code>{{ value }}</code></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-secondary text-center">
+                        <p class="mb-0">📭 Параметры URL отсутствуют.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
